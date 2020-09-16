@@ -9,12 +9,13 @@ export const snake = {
 	dx : 1,
 	dy : 0,
 	tail : [],
-	update : function() {
+	move : function() {
 		this.x += this.dx;
 		this.y += this.dy;
 
 		ctx.fillStyle = 'black';
 		ctx.fillRect(this.x * scl + 1, this.y * scl + 1, scl - 1, scl + -1) ;
+
 
 	},
 	eat : function() {
@@ -28,8 +29,7 @@ export const snake = {
 		);
 
 		// on each update remove last and add next
-		this.tail.shift();
 		this.tail.push([this.x, this.y]);
-
+		this.tail.shift();
 	},
 };

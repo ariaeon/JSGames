@@ -59,7 +59,7 @@ function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	drawGrid();
 	food.draw();
-	snake.update();
+	snake.move();
 
 	snake.tail.forEach(e => {
 		if(e[0] === snake.x && e[1] === snake.y) {
@@ -75,9 +75,8 @@ function draw() {
 		console.log(`Score: ${score}`);
 	}
 
+	console.log(snake.tail);
 	if(!snake.tail.length) return;
-	// console.log(`${snake.x} , ${snake.y}`);
-	// console.log(`${snake.tail[0][0]} , ${snake.tail[0][1]}`);
 
 
 	snake.drawtail();
