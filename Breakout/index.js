@@ -9,7 +9,8 @@ document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
 let leftPressed, rightPressed = false;
 const blocks = [];
-
+let score = 0;
+let highscore = 0;
 // Tried following but would bug out when pressing 2 keys
 // function logKey(e) {
 // 	switch (e.code) {
@@ -50,7 +51,7 @@ function initialiseBlocks() {
 	for(let r = 0; r < rows; r++) {
 		for(let i = 0; i < canvas.width - 60 ; i += 73) {
 			const x = i + 25;
-			const y = r * 20 + 20;
+			const y = r * 20 + 30;
 			blocks.push(new block(x, y));
 		}
 	}
@@ -89,20 +90,22 @@ function RectCircleColliding(circle, rect) {
 	const dy = distY - rect.height / 2;
 	return (dx * dx + dy * dy <= (circle.radius * circle.radius));
 }
-
 function detectCollisionBlocks() {
 	blocks.forEach(b => {
 		if(b.visible) {
 			// stolen this shit hard
 			if(RectCircleColliding(ball, b)) {
 				b.visible = false;
+				score += 1;
 				// center hits bottom
 				if(ball.x >= b.x && ball.x <= b.x + b.width) {
 					ball.dy = ball.dy == 1 ? -1 : 1;
 				}
+				// center hits side
 				else if(ball.y > b.y && ball.y < b.y + b.height) {
 					ball.dx = ball.dx == 1 ? -1 : 1;
 				}
+				// has to be corner ?
 				else {
 					ball.dx = ball.dx == 1 ? -1 : 1;
 					ball.dy = ball.dy == 1 ? -1 : 1;
@@ -118,6 +121,15 @@ function resetGame() {
 	blocks.forEach(b => b.visible = true);
 	ball.x = Math.random() * (canvas.width - 0) + 0;
 	ball.y = canvas.height - 200;
+	if(score > highscore) {
+		highscore = score;
+	}
+	score = 0;
+
+}
+function drawScore() {
+	ctx.font = '14px Arial';
+	ctx.fillText('Score: ' + score + '   Highscore: ' + highscore, 6, 20);
 }
 
 initialiseBlocks();
@@ -141,7 +153,10 @@ function draw() {
 		}
 	}
 	platform.draw();
-
+	drawScore();
+	if(blocks.every(b => b.visible == false)) {
+		alert('you won!');
+	}
 }
 
 setInterval(draw, 10);
