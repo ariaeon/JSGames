@@ -58,20 +58,29 @@ function initialiseBlocks() {
 }
 function detectCollisionPlatform() {
 	// check height of ball so this doesnt run every frame
-	if((ball.y + (ball.radius)) >= platform.y && (ball.y + (ball.radius)) < canvas.height) {
-		if(ball.x >= platform.x && ball.x <= platform.x + platform.width) {
+	// if((ball.y + (ball.radius)) >= platform.y && (ball.y + (ball.radius)) < canvas.height) {
+	// 	if(ball.x >= platform.x && ball.x <= platform.x + platform.width) {
+	// 		ball.dy = -1;
+	// 	}
+	// }
+	if(RectCircleColliding(ball, platform)) {
+		if(ball.x > platform.x && ball.x < platform.x + platform.width) {
 			ball.dy = -1;
+			if(ball.y > platform.y) {
+				ball.dx = ball.dx == 1 ? -1 : 1;
+
+			}
 		}
 	}
 }
 function detectCollisionBorders() {
-	if((ball.x - ball.radius) <= 0 || (ball.x + ball.radius) >= canvas.width) {
+	if((ball.x - ball.radius) < 0 || (ball.x + ball.radius) > canvas.width) {
 		ball.dx = ball.dx == 1 ? -1 : 1;
 	}
-	if((ball.y - ball.radius) <= 0) {
+	if((ball.y - ball.radius) < 0) {
 		ball.dy = ball.dy == 1 ? -1 : 1;
 	}
-	else if ((ball.y) >= canvas.height) {
+	else if ((ball.y) > canvas.height) {
 		console.log('udedlol');
 		resetGame();
 	}
@@ -119,7 +128,7 @@ function detectCollisionBlocks() {
 }
 function resetGame() {
 	blocks.forEach(b => b.visible = true);
-	ball.x = Math.random() * (canvas.width - 0) + 0;
+	ball.x = Math.random() * (canvas.width - 30) + 15;
 	ball.y = canvas.height - 200;
 	if(score > highscore) {
 		highscore = score;
@@ -136,11 +145,6 @@ initialiseBlocks();
 
 function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	detectCollisionPlatform();
-	detectCollisionBorders();
-	detectCollisionBlocks();
-	ball.draw();
-	blocks.forEach(b => b.visible ? b.draw() : '');
 	if (leftPressed) {
 		if (platform.x > 0) {
 			platform.x -= platform.v;
@@ -153,6 +157,12 @@ function draw() {
 		}
 	}
 	platform.draw();
+
+	detectCollisionPlatform();
+	detectCollisionBorders();
+	detectCollisionBlocks();
+	ball.draw();
+	blocks.forEach(b => b.visible ? b.draw() : '');
 	drawScore();
 	if(blocks.every(b => b.visible == false)) {
 		alert('you won!');
