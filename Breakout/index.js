@@ -8,6 +8,7 @@ const ctx = canvas.getContext('2d');
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
 let leftPressed, rightPressed = false;
+const blocks = [];
 
 // Tried following but would bug out when pressing 2 keys
 // function logKey(e) {
@@ -44,19 +45,16 @@ function keyUp(e) {
 
 	}
 }
-
-const blocks = [];
-const rows = 3;
-for(let r = 0; r < rows; r++) {
-	for(let i = 0; i < canvas.width - 60 ; i += 73) {
-		const x = i + 25;
-		const y = r * 20 + 20;
-		blocks.push(new block(x, y));
+function initialiseBlocks() {
+	const rows = 3;
+	for(let r = 0; r < rows; r++) {
+		for(let i = 0; i < canvas.width - 60 ; i += 73) {
+			const x = i + 25;
+			const y = r * 20 + 20;
+			blocks.push(new block(x, y));
+		}
 	}
 }
-console.log(blocks);
-
-
 function detectCollisionPlatform() {
 	// check height of ball so this doesnt run every frame
 	if((ball.y + (ball.radius)) >= platform.y && (ball.y + (ball.radius)) < canvas.height) {
@@ -72,10 +70,49 @@ function detectCollisionBorders() {
 	if((ball.y - ball.radius) <= 0) {
 		ball.dy = ball.dy == 1 ? -1 : 1;
 	}
-	else if ((ball.y + ball.radius) >= canvas.height) {
+	else if ((ball.y) >= canvas.height) {
 		console.log('udedlol');
 		resetGame();
 	}
+}
+function RectCircleColliding(circle, rect) {
+	const distX = Math.abs(circle.x - rect.x - rect.width / 2);
+	const distY = Math.abs(circle.y - rect.y - rect.height / 2);
+
+	if (distX > (rect.width / 2 + circle.radius)) { return false; }
+	if (distY > (rect.height / 2 + circle.radius)) { return false; }
+
+	if (distX <= (rect.width / 2)) { return true; }
+	if (distY <= (rect.height / 2)) { return true; }
+
+	const dx = distX - rect.width / 2;
+	const dy = distY - rect.height / 2;
+	return (dx * dx + dy * dy <= (circle.radius * circle.radius));
+}
+
+function detectCollisionBlocks() {
+	blocks.forEach(b => {
+		if(b.visible) {
+			// stolen this shit hard
+			if(RectCircleColliding(ball, b)) {
+				b.visible = false;
+				// center hits bottom
+				if(ball.x >= b.x && ball.x <= b.x + b.width) {
+					ball.dy = ball.dy == 1 ? -1 : 1;
+				}
+				else if(ball.y > b.y && ball.y < b.y + b.height) {
+					ball.dx = ball.dx == 1 ? -1 : 1;
+				}
+				else {
+					ball.dx = ball.dx == 1 ? -1 : 1;
+					ball.dy = ball.dy == 1 ? -1 : 1;
+
+				}
+			}
+
+		}
+	});
+
 }
 function resetGame() {
 	blocks.forEach(b => b.visible = true);
@@ -83,12 +120,15 @@ function resetGame() {
 	ball.y = canvas.height - 200;
 }
 
+initialiseBlocks();
+
 function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	detectCollisionPlatform();
 	detectCollisionBorders();
+	detectCollisionBlocks();
 	ball.draw();
-	blocks.forEach(b => b.draw());
+	blocks.forEach(b => b.visible ? b.draw() : '');
 	if (leftPressed) {
 		if (platform.x > 0) {
 			platform.x -= platform.v;

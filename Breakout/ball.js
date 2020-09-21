@@ -5,10 +5,10 @@ const ctx = canvas.getContext('2d');
 export const ball = {
 	x: canvas.width / 2 - 5,
 	y: canvas.height - 50,
+	radius: 10,
 	dx:1,
 	dy:1,
 	v:3,
-	radius: 10,
 	draw: function() {
 		// console.log(this.x, this.y);
 		ctx.beginPath();
