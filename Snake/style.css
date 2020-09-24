@@ -6,3 +6,12 @@ canvas {
 	display: block; 
 	margin: 0 auto; 
 }
+body{
+	display:flex;
+	justify-content: center;
+}
+.content{
+	display:flex;
+	width: 481px;
+	flex-direction: column;
+}

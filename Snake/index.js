@@ -5,29 +5,34 @@ const canvas = document.getElementById('myCanvas');
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext('2d');
 document.addEventListener('keydown', logKey);
+document.getElementById('speed').addEventListener('change', (e) => 	{
+	speed = e.target.value;
+	console.log(speed);
+});
 
 const scl = 20;
 const cols = canvas.width / scl;
 const rows = canvas.height / scl;
 let score = 0;
+let speed = document.getElementById('speed').value;
 
 function logKey(e) {
 	switch (e.code) {
 	case 'ArrowRight':
-		snake.dx = 1;
+		snake.dx = snake.dx == -1 ? -1 : 1;
 		snake.dy = 0;
 		break;
 	case 'ArrowLeft':
-		snake.dx = -1;
+		snake.dx = snake.dx == 1 ? 1 : -1;
 		snake.dy = 0;
 		break;
 	case 'ArrowUp':
 		snake.dx = 0;
-		snake.dy = -1;
+		snake.dy = snake.dy == 1 ? 1 : -1;
 		break;
 	case 'ArrowDown':
 		snake.dx = 0;
-		snake.dy = 1;
+		snake.dy = snake.dy == -1 ? -1 : 1;
 		break;
 	}
 }
@@ -76,11 +81,10 @@ function draw() {
 	}
 
 	console.log(snake.tail);
-	if(!snake.tail.length) return;
-
-
-	snake.drawtail();
-
+	if(snake.tail.length) {
+		snake.drawtail();
+	}
+	setTimeout(draw, 1100 - speed * 100);
 }
 
-setInterval(draw, 250);
+draw();
