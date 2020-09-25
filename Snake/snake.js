@@ -1,21 +1,37 @@
-const canvas = document.getElementById('myCanvas');
 /** @type {CanvasRenderingContext2D} */
-const ctx = canvas.getContext('2d');
-const scl = 20;
+import { scl, cols, rows, ctx } from './index.js';
 
 export const snake = {
-	x : 10,
-	y : 10,
+	x : 0,
+	y : 0,
 	dx : 1,
 	dy : 0,
 	tail : [],
+	draw : function() {
+		ctx.fillStyle = 'black';
+		ctx.fillRect(this.x * scl + 1, this.y * scl + 1, scl - 1, scl + -1) ;
+	},
 	move : function() {
 		this.x += this.dx;
 		this.y += this.dy;
 
+		if(this.x < 0) {
+			this.x = cols - 1;
+		}
+		else if(this.x >= cols) {
+			this.x = 0;
+		}
+		if(this.y < 0) {
+			this.y = (rows - 1);
+		}
+		else if(this.y >= rows) {
+			this.y = -0;
+		}
+
+
 		ctx.fillStyle = 'black';
 		ctx.fillRect(this.x * scl + 1, this.y * scl + 1, scl - 1, scl + -1) ;
-
+		console.log(this.x, this.y);
 
 	},
 	eat : function() {

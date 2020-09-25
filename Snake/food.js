@@ -1,7 +1,5 @@
-const canvas = document.getElementById('myCanvas');
 /** @type {CanvasRenderingContext2D} */
-const ctx = canvas.getContext('2d');
-const scl = 20;
+import { scl, ctx } from './index.js';
 
 export const food = {
 	x : 0,
