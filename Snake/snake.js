@@ -1,5 +1,15 @@
 /** @type {CanvasRenderingContext2D} */
 import { scl, cols, rows, ctx } from './index.js';
+let loop = document.getElementById('success-outlined').checked ? true : false;
+document.getElementById('success-outlined').addEventListener('change', (e) => 	{
+	loop = e.target.checked;
+	console.log(loop);
+});
+document.getElementById('danger-outlined').addEventListener('change', () => 	{
+	loop = false;
+	console.log(loop);
+});
+
 
 export const snake = {
 	x : 0,
@@ -9,6 +19,9 @@ export const snake = {
 	tail : [],
 	draw : function() {
 		ctx.fillStyle = 'black';
+		this.x = Math.floor(Math.random() * rows);
+		this.y = Math.floor(Math.random() * cols);
+
 		ctx.fillRect(this.x * scl + 1, this.y * scl + 1, scl - 1, scl + -1) ;
 	},
 	move : function() {
@@ -16,16 +29,19 @@ export const snake = {
 		this.y += this.dy;
 
 		if(this.x < 0) {
-			this.x = cols - 1;
+			loop ? this.x = cols - 1 : this.reset();
 		}
 		else if(this.x >= cols) {
-			this.x = 0;
+			loop ? this.x = 0 : this.reset();
+
 		}
 		if(this.y < 0) {
-			this.y = (rows - 1);
+			loop ? this.y = (rows - 1) : this.reset();
+
 		}
 		else if(this.y >= rows) {
-			this.y = -0;
+			loop ? this.y = -0 : this.reset();
+
 		}
 
 
@@ -47,5 +63,9 @@ export const snake = {
 		// on each update remove last and add next
 		this.tail.push([this.x, this.y]);
 		this.tail.shift();
+	},
+	reset : function() {
+		this.draw();
+		this.tail = [];
 	},
 };
